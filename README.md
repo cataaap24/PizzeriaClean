@@ -174,11 +174,11 @@ public interface Pedible {
 **Ejemplo:**
 ```
 --- Menú ---
-[Pizza] ID=101, Nombre='Napolitana', Disponible=true   | Precio base: $15000
-[Pizza] ID=102, Nombre='Mexicana', Disponible=true | Precio base: $25000
-[Pizza] ID=103, Nombre='Tres Quesos', Disponible=true | Precio base: $18000
-[Bebida] ID=104, Nombre='Coca-Cola', Disponible=true   | Precio base: $5000
-[Bebida] ID=105, Nombre='Agua', Disponible=true        | Precio base: $3000
+[Pizza] ID = 101, Nombre = 'Napolitana', Disponible = true   | Precio base: $15000
+[Pizza] ID = 102, Nombre = 'Mexicana', Disponible = true | Precio base: $25000
+[Pizza] ID = 103, Nombre = 'Tres Quesos', Disponible = true | Precio base: $18000
+[Bebida] ID = 104, Nombre = 'Coca-Cola', Disponible = true   | Precio base: $5000
+[Bebida] ID = 105, Nombre = 'Agua', Disponible = true        | Precio base: $3000
 ```
 
 ---
@@ -188,7 +188,7 @@ public interface Pedible {
 
 **Resultado esperado:**
 ```
-   Pedido creado: ID=102
+   Pedido creado: ID = 102
    Entrega: Para aquí
    Total:   $18000
 ```
@@ -200,9 +200,9 @@ public interface Pedible {
 
 **Resultado esperado:**
 ```
-   Pedido creado: ID=103
-   Entrega: Domicilio (+$2000)
-   Total:   $17000
+   Pedido creado: ID = 103
+   Entrega: Domicilio (+$3000)
+   Total:   $18000
 ```
 
 ---
