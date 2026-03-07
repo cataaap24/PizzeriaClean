@@ -13,6 +13,7 @@ public abstract class Producto implements Pedible {
     public void setNombre(String nombre) { this.nombre = nombre; }
     public int getId() { return this.id; }
     public String getNombre() { return this.nombre; }
+    public abstract double calcularValorBase();
 
     @Override
     public void pedir() {
