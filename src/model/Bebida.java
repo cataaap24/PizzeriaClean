@@ -1,5 +1,5 @@
 package model;
-import service.Reglas;
+//import services.Reglas;
 
 public class Bebida extends Producto {
     private int volumenMl;
