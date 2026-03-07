@@ -261,7 +261,7 @@ Cliente no encontrado.
 
 ## Lista de chequeo 
 
-- [x] UML completo con relaciones y visibilidad (ver `/docs/uml.md`)
+- [x] UML completo con relaciones y visibilidad (ver `/docs/uml.png`)
 - [x] Clase abstracta `Producto` con subclases `Pizza` y `Bebida`
 - [x] Interfaz `Pedible` implementada correctamente
 - [x] Polimorfismo con `ArrayList<Producto>`
