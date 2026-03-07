@@ -1,17 +1,26 @@
 package model;
+import service.Reglas;
 
 public class Bebida extends Producto {
-    private int volumenMI;
+    private int volumenMl;
 
-    public Bebida(int id, String nombre, int volumenMI) {
-        super(id, nombre);
-        this.volumenMI = volumenMI;
+    public Bebida(String nombre, int volumenMl) {
+        super(nombre);
+        this.volumenMl = volumenMl;
     }
 
-    public int getVolumenMI() { return this.volumenMI; }
+    public int getVolumenMl() { return this.volumenMl; }
+    
+    @Override
+    public String getTipo() { return "Bebida"; }
 
     @Override
     public double calcularValorBase() {
-        return 0;
+        return 0; // reglas
+    }
+    
+    @Override
+    public String toString() {
+        return super.toString() + " (Volumen = " + volumenMl + "ml)";
     }
 }
