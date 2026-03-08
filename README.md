@@ -21,13 +21,17 @@
 ## Estructura del proyecto
 ```
 src/
+├── exceptions/
+│   ├── PizzeriaException.java 
 ├── model/
+│   ├── EstadoPedido.java
 │   ├── Entregable.java 
 │   ├── Producto.java  
 │   ├── Pizza.java 
 │   ├── Bebida.java 
 │   ├── Cliente.java
-│   ├── TipoEntrega.java   
+│   ├── TipoEntrega.java
+│   ├── Pedible.java  
 │   └── Pedido.java   
 ├── service/
 │   ├── IdGenerator.java   
@@ -35,6 +39,7 @@ src/
 │   ├── CalculadoraTotal.java
 │   └── Pizzeria.java
 └── ui/
+    ├── PizzaAnimation.java
     └── Main.java
 ```
 ---
