@@ -147,8 +147,8 @@ public interface Entregable {
 
 ```
 
-`Pedido` implements `Entregable`. Se utiliza la interfaz Entregable para definir el comportamiento que debe tener cualquier objeto que pueda ser entregado o cancelado. Po
-
+`Pedido` implements `Entregable`. Se utiliza la interfaz Entregable para definir el comportamiento que debe tener cualquier objeto que pueda ser entregado o cancelado. Por ejemplo, paara una futura implementación
+de una clase `Reserva`, la cual tambien puede ser pedida, cancelada, entregada o validar su estado. 
 ---
 
 ## G. Modificador `static`
@@ -175,11 +175,14 @@ public interface Entregable {
 **Ejemplo:**
 ```
 --- Menú ---
-[Pizza] ID = 101, Nombre = 'Napolitana', Disponible = true   | Precio base: $15000
-[Pizza] ID = 102, Nombre = 'Mexicana', Disponible = true | Precio base: $25000
-[Pizza] ID = 103, Nombre = 'Tres Quesos', Disponible = true | Precio base: $18000
-[Bebida] ID = 104, Nombre = 'Coca-Cola', Disponible = true   | Precio base: $5000
-[Bebida] ID = 105, Nombre = 'Agua', Disponible = true        | Precio base: $3000
+  [Pizza] ID = 5, Nombre = 'Placer de antano', Disponible = true (Sabor = Pina - Peperoni, Tamaño = M) | Precio base: $20000
+  [Pizza] ID = 6, Nombre = 'Camaronzon', Disponible = true (Sabor = Camarones - Salsa, Tamaño = G) | Precio base: $35000
+  [Pizza] ID = 7, Nombre = 'Carnivora Suprema', Disponible = true (Sabor = Carne molida - Chorizo - Peperoni, Tamaño = G) | Precio base: $35000
+  [Pizza] ID = 8, Nombre = 'Veggie Deluxe', Disponible = true (Sabor = Champinones - Pimenton - Cebolla - Maiz, Tamaño = P) | Precio base: $15000
+  [Pizza] ID = 9, Nombre = 'Mexicana Picante', Disponible = true (Sabor = Carne - Jalapenos - Nachos triturados, Tamaño = M) | Precio base: $20000
+  [Bebida] ID = 10, Nombre = 'Cocacola', Disponible = true (Volumen = 350ml) | Precio base: $4500
+  [Bebida] ID = 11, Nombre = 'Sprite', Disponible = true (Volumen = 350ml) | Precio base: $4500
+  [Bebida] ID = 12, Nombre = 'Agua', Disponible = true (Volumen = 300ml) | Precio base: $3000
 ```
 
 ---
