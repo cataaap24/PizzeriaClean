@@ -155,6 +155,7 @@ public interface Entregable {
 
 `Pedido` implements `Entregable`. Se utiliza la interfaz Entregable para definir el comportamiento que debe tener cualquier objeto que pueda ser entregado o cancelado. Por ejemplo, paara una futura implementación
 de una clase `Reserva`, la cual tambien puede ser pedida, cancelada, entregada o validar su estado. 
+
 ---
 
 ## G. Modificador `static`
