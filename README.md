@@ -31,6 +31,7 @@ src/
 │   ├── Bebida.java 
 │   ├── Cliente.java
 │   ├── TipoEntrega.java
+│   ├── Reserva.java
 │   └── Pedido.java   
 ├── service/
 │   ├── IdGenerator.java   
@@ -57,14 +58,16 @@ src/
 
 ### 2. Asociación
 `Pedido` referencia a `Cliente` y a `TipoEntrega` , objetos que existen independientemente del pedido pero que se relaciona con él. 
-
+`Reserva` referencia a `Cliente` de la misma forma.
 ```java
 // Pedido.java
-private Cliente cliente;   
+private Cliente cliente;
+// Reserva.java
+private Cliente cliente;
 ```
 
 ### 3. Agregación
-`Pizzeria` agrega listas de `Producto`, `Cliente` y `Pedido`.
+`Pizzeria` agrega listas de `Producto`, `Cliente`, `Pedido` y `Reserva`.
 Los objetos se crean fuera de `Pizzeria` (específicamente en `Main.java`) y se pasan como
 parámetros, por lo que tienen existen por su cuenta.
 
@@ -153,8 +156,12 @@ public interface Entregable {
 
 ```
 
-`Pedido` implements `Entregable`. Se utiliza la interfaz Entregable para definir el comportamiento que debe tener cualquier objeto que pueda ser entregado o cancelado. Por ejemplo, para una futura implementación
-de una clase `Reserva`, la cual también puede ser pedida, cancelada, entregada o validar su estado. 
+La interfaz Entregable define el contrato de comportamiento que deben cumplir los objetos que pueden ser pedidos, entregados o cancelados. Dos clases distintas la implementan:
+
+- `Pedido` implements `Entregable`: gestiona el ciclo de vida de un pedido de comida.
+- `Reserva` implements `Entregable`: gestiona el ciclo de vida de una reserva de mesa.
+
+Esto demuestra el propósito real de una interfaz: clases distintas comparten el mismo contrato sin necesidad de heredar de la misma clase padre.
 
 ---
 
@@ -262,7 +269,7 @@ Confirmación: Pedido 14 ha sido cancelado.
 
 ---
 
-### Caso 6: Intentar entregar un pedido ya cancelado
+### Caso 6: Intentar pedir una cantidad muy grande de un ítem
 **Acción:** opción `4` ---> Cantidad: `0` o `9`
 
 **Resultado esperado:**
@@ -278,6 +285,18 @@ Cantidad inválida (1-8).
 **Resultado esperado:**
 ```
 Cliente no encontrado.
+```
+
+### Caso 8: Registrar y confirmar reserva
+**Acción:** opción `8` → ID Cliente: `3`, Personas: `4`, Mesa: `2`, Hora: 19:30
+luego opción `9` ---> ingresar ID de la reserva creada
+**Resultado esperado:**
+```
+Reserva creada: ID = 13 | Hora = 19:30
+
+--- Reservas Activas ---
+Reserva ID = 13 | Cliente = Arturo Arias | Personas = 4 | Hora = 19:30 | Estado = En preparación
+Reserva 13 confirmada.
 ```
 
 ---
@@ -301,4 +320,4 @@ java -cp out -ui.Main
 - [x] Interfaz `Entregable` implementada correctamente
 - [x] Polimorfismo con `ArrayList<Producto>`
 - [x] Uso correcto de `static` (IdGenerator, Reglas, CalculadoraTotal, TipoEntrega)
-- [x] README con 7 casos de prueba
+- [x] README con 9 casos de prueba

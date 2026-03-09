@@ -10,8 +10,9 @@ public class Pizzeria {
     private final String nombre;
 
     private final ArrayList<Producto> menu = new ArrayList<>();
-    private final ArrayList<Cliente>  clientes = new ArrayList<>();
-    private final ArrayList<Pedido>   pedidos  = new ArrayList<>();
+    private final ArrayList<Cliente> clientes = new ArrayList<>();
+    private final ArrayList<Pedido> pedidos  = new ArrayList<>();
+    private final ArrayList<Reserva> reservas  = new ArrayList<>();
     private final CalculadoraTotal calculadoraTotal = new CalculadoraTotal();
 
     public Pizzeria(String nombre) { this.nombre = nombre; }
@@ -130,6 +131,69 @@ public class Pizzeria {
         }
         return hay;
     }
+
+    public void registrarReserva(int idCliente, int numPersonas, String hora) {
+        Cliente c = buscarCliente(idCliente);
+        if (c == null) {
+            System.out.println("Cliente no encontrado.");
+            return;
+        }
+
+        Reserva r = new Reserva(c, numPersonas, hora);
+        r.pedir();
+        reservas.add(r);
+        System.out.println("Reserva creada: ID = " + r.getId() + " | Hora = " + hora);
+    }
+
+    public void confirmarReserva(int idReserva) {
+        Reserva r = buscarReserva(idReserva);
+        if (r == null) {
+            System.out.println("Reserva no encontrada.");
+            return;
+        }
+        if (r.entregar()) {
+            System.out.println("Reserva " + idReserva + " confirmada.");
+        }
+    }
+
+    public void cancelarReserva(int idReserva) {
+        Reserva r = buscarReserva(idReserva);
+        if (r == null) {
+            System.out.println("Reserva no encontrada.");
+            return;
+        }
+        if (r.cancelar()) {
+            System.out.println("Reserva " + idReserva + " cancelada.");
+        }
+    }
+
+    public void mostrarReservas() {
+        if (reservas.isEmpty()) {
+            System.out.println("No hay reservas.");
+            return;
+        }
+        System.out.println("\n--- Reservas ---");
+        for (Reserva r : reservas) {
+            System.out.println(r);
+        }
+
+    }
+
+    public boolean mostrarReservasActivas() {
+        System.out.println("\n--- Reservas Activas ---");
+        boolean hay = false;
+        for (Reserva r : reservas) {
+            if (r.estaActivo()) {
+                System.out.println(r);
+                hay = true;
+            }
+        }
+        if (!hay){
+            System.out.println("No hay reservas activas.");
+        }
+        return hay;
+    }
+
     private Cliente buscarCliente(int id) {
         for (Cliente c : clientes) {
             if (c.getId() == id) return c;
@@ -149,5 +213,11 @@ public class Pizzeria {
             if (p.getId() == id) return p;
         }
         throw new PizzeriaException("Pedido con ID " + id + " no encontrado en el sistema.");
+    }
+    private Reserva buscarReserva(int id) {
+        for (Reserva r : reservas) {
+            if (r.getId() == id) return r;
+        }
+        throw new PizzeriaException("Reserva con ID " + id + " no encontrada en el sistema.");
     }
 }
