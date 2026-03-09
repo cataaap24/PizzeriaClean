@@ -38,8 +38,6 @@ src/
 │   ├── Reglas.java
 │   ├── CalculadoraTotal.java
 │   └── Pizzeria.java
-├── exceptions/
-│   └── PizzaException.java
 └── ui/
     ├── PizzaAnimation.java
     └── Main.java
@@ -302,8 +300,9 @@ Reserva 13 confirmada.
 ---
 
 ## Compilación y ejecución
-Se requiere la versión 25 del kit de Java Development (SE) que contiene el compilador (javac) y el ejecutable (java) que permite la ejecución del programa.
-Una vez hecho esto, se descarga el proyecto, también se puede hacer solo con el directorio src, se abre la consola y se confirma que la ruta sea dentro de la carpeta del proyecto, se ejecutará entonces:
+Se requiere tener instalada la versión 25 del Java Development Kit (JDK SE), la cual incluye el compilador (javac) y el ejecutable (java), necesarios para compilar y ejecutar el programa.
+
+Una vez instalado, se debe descargar el proyecto (también es posible trabajar únicamente con el directorio src). Posteriormente, se abre una consola y se verifica que la ruta actual corresponda a la carpeta raíz del proyecto. Finalmente, se ejecutarán los siguientes comandos:
 ```bash
 # Compilar
 javac -d out -sourcepath src src/ui/Main.java
