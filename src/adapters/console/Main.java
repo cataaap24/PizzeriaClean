@@ -176,6 +176,17 @@ public class Main {
                 return TipoEntrega.PARA_AQUI;
         }
     }
+    
+    private static <T> void imprimirLista(String titulo, List<T> objetos) {
+        if (objetos.isEmpty()) {
+            System.out.println("No hay " + titulo.toLowerCase() + ".");
+            return;
+        }
+        System.out.println("\n--- " + titulo + " ---");
+        for (T o : objetos){
+            System.out.println(o);
+        }
+    }
 
     private static int leerEntero(Scanner sc) {
         while (!sc.hasNextInt()) {
