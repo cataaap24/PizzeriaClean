@@ -71,8 +71,9 @@ src/
 │       ├── Main.java
 │       └── PizzaAnimation.java
 │
+// ?
 └── exceptions/
-    └── PizzeriaException.java
+    └── PizzeriaException.java 
 ```
 ---
 ## A. Relaciones entre clases
