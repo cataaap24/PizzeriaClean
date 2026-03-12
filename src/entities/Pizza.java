@@ -1,4 +1,4 @@
-package model;
+package entities;
 import services.Reglas;
 
 public class Pizza extends Producto {

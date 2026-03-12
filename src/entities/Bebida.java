@@ -1,4 +1,4 @@
-package model;
+package entities;
 
 public class Bebida extends Producto {
     private final int volumenMl;

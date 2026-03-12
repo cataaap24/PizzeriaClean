@@ -1,4 +1,4 @@
-package model;
+package entities;
 import exceptions.PizzeriaException;
 import services.IdGenerator;
 import java.time.LocalDateTime;

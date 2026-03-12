@@ -1,4 +1,4 @@
-package model;
+package entities;
 
 public interface Entregable {
     public void pedir();

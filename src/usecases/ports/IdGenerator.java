@@ -1,4 +1,4 @@
-package services;
+package usecases.ports;
 
 public class IdGenerator {
     private static int current = 0;

@@ -1,4 +1,4 @@
-package model;
+package entities;
 
 public enum EstadoPedido {
     PENDIENTE (true, "Pendiente de preparación"),

@@ -1,4 +1,4 @@
-package services;
+package usecases.services;
 
 public class Reglas {
     public static final int MAX_CANT = 8;
