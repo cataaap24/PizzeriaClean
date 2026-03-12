@@ -21,26 +21,58 @@
 ## Estructura del proyecto
 ```
 src/
-├── exceptions/
-│   ├── PizzeriaException.java 
-├── model/
+│
+├── entities/
+│   ├── Entregable.java
 │   ├── EstadoPedido.java
-│   ├── Entregable.java 
-│   ├── Producto.java  
-│   ├── Pizza.java 
-│   ├── Bebida.java 
-│   ├── Cliente.java
 │   ├── TipoEntrega.java
-│   ├── Reserva.java
-│   └── Pedido.java   
-├── service/
-│   ├── IdGenerator.java   
-│   ├── Reglas.java
-│   ├── CalculadoraTotal.java
-│   └── Pizzeria.java
-└── ui/
-    ├── PizzaAnimation.java
-    └── Main.java
+│   ├── Producto.java
+│   ├── Pizza.java
+│   ├── Bebida.java
+│   ├── Cliente.java
+│   ├── Pedido.java
+│   └── Reserva.java
+│
+├── usecases/
+│   ├── ports/
+│   │   ├── IdGenerator.java
+│   │   ├── ClienteRepository.java
+│   │   ├── ProductoRepository.java
+│   │   ├── PedidoRepository.java
+│   │   └── ReservaRepository.java
+│   │
+│   ├── dto/
+│   │   └── OperationResult.java
+│   │
+│   └── services/
+│       ├── Reglas.java
+│       ├── CalculadoraTotal.java
+│       ├── RegistrarClienteUseCase.java
+│       ├── RealizarPedidoUseCase.java
+│       ├── EntregarPedidoUseCase.java
+│       ├── CancelarPedidoUseCase.java
+│       ├── RegistrarReservaUseCase.java
+│       ├── ConfirmarReservaUseCase.java
+│       ├── CancelarReservaUseCase.java
+│       └── PizzeriaApp.java
+│
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── InMemoryClienteRepository.java
+│   │   ├── InMemoryProductoRepository.java
+│   │   ├── InMemoryPedidoRepository.java
+│   │   └── InMemoryReservaRepository.java
+│   │
+│   └── services/
+│       └── SimpleIdGenerator.java
+│
+├── adapters/
+│   └── console/
+│       ├── Main.java
+│       └── PizzaAnimation.java
+│
+└── exceptions/
+    └── PizzeriaException.java
 ```
 ---
 ## A. Relaciones entre clases
