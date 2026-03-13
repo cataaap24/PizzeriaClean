@@ -1,6 +1,6 @@
 package entities;
-import exceptions.PizzeriaException;
-import services.IdGenerator;
+import infrastructure.exceptions.PizzeriaException;
+import usecases.services.IdGenerator;
 
 public abstract class Producto  {
     private final int id;

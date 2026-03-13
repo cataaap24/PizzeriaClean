@@ -1,6 +1,7 @@
 package usecases.services;
 
-import model.TipoEntrega;
+import entities.Reglas;
+import entities.TipoEntrega;
 
 public class CalculadoraTotal {
 

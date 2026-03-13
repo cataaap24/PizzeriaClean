@@ -2,9 +2,9 @@ package usecases.services;
 
 import java.util.ArrayList;
 
-import exceptions.PizzeriaException;
-import model.*;
-import services.Reglas;
+import infrastructure.exceptions.PizzeriaException;
+import entities.*;
+
 
 public class Pizzeria {
     private final String nombre;
