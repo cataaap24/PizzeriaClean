@@ -67,12 +67,10 @@ src/
 │       └── SimpleIdGenerator.java
 │
 ├── adapters/
-│   └── console/
-│       ├── Main.java
-│       └── PizzaAnimation.java
-│
-└── exceptions/
-    └── PizzeriaException.java
+    └── console/
+    ├── Main.java
+    └── PizzaAnimation.java
+
 ```
 ---
 ## A. Relaciones entre clases

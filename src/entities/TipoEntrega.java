@@ -1,7 +1,5 @@
 package entities;
 
-// Define los tipos de entrega disponibles en la pizzería y sus costos asociados.
-
 public enum TipoEntrega {
     PARA_AQUI (0.0, "Para aquí"),
     PARA_LLEVAR (300.0, "Para llevar"),

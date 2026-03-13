@@ -1,4 +1,5 @@
-package ui;
+package adapters.console;
+
 
 import java.util.Scanner;
 import model.*;
@@ -173,6 +174,17 @@ public class Main {
             default:
                 System.out.println("Opción no válida, asignando para comer aquí.");
                 return TipoEntrega.PARA_AQUI;
+        }
+    }
+    
+    private static <T> void imprimirLista(String titulo, List<T> objetos) {
+        if (objetos.isEmpty()) {
+            System.out.println("No hay " + titulo.toLowerCase() + ".");
+            return;
+        }
+        System.out.println("\n--- " + titulo + " ---");
+        for (T o : objetos){
+            System.out.println(o);
         }
     }
 

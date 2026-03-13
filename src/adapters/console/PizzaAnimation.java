@@ -1,4 +1,4 @@
-package ui;
+package adapters.console;
 
 public class PizzaAnimation {
 

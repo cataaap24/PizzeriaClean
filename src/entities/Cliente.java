@@ -9,8 +9,8 @@ public class Cliente {
 
     public Cliente(String nombre, String telefono) {
         this.id = IdGenerator.nextId();
-        this.nombre = nombre;
-        this.telefono = telefono;
+        setNombre(nombre);
+        setTelefono(telefono);
     }
     public int getId() { return this.id; }
     public String getNombre() { return this.nombre; }
