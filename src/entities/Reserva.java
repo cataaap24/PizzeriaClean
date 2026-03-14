@@ -1,6 +1,6 @@
 package entities;
-import exceptions.PizzeriaException;
-import services.IdGenerator;
+import infrastructure.exceptions.PizzeriaException;
+import usecases.services.IdGenerator;
 
 public class Reserva implements Entregable {
 

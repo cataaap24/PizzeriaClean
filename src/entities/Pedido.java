@@ -1,8 +1,10 @@
+
 package entities;
-import exceptions.PizzeriaException;
-import services.IdGenerator;
+import usecases.services.IdGenerator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import infrastructure.exceptions.PizzeriaException;
 
 public class Pedido implements Entregable {
       private final int id;

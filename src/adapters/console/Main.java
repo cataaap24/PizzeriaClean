@@ -2,10 +2,12 @@ package adapters.console;
 
 
 import java.util.Scanner;
-import model.*;
-import services.*;
-import exceptions.PizzeriaException;
-import model.Reserva;
+import java.util.List;
+
+import infrastructure.exceptions.PizzeriaException;
+import entities.*;
+import usecases.services.*;
+
 public class Main {
     
     public static void main(String[] args) throws InterruptedException {
