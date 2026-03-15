@@ -1,23 +1,21 @@
 package entities;
-import infrastructure.exceptions.PizzeriaException;
-import usecases.services.IdGenerator;
 
 public class Cliente {
-    private final int id;
+    private final String id;
     private String nombre;
     private String telefono;
 
-    public Cliente(String nombre, String telefono) {
-        this.id = IdGenerator.nextId();
-        setNombre(nombre);
-        setTelefono(telefono);
+    public Cliente(String id, String nombre, String telefono) {
+        this.id = id;
+        this.nombre = nombre;
+        this.telefono = telefono;
     }
-    public int getId() { return this.id; }
+    public String getId() { return this.id; }
     public String getNombre() { return this.nombre; }
     public String getTelefono() { return this.telefono; }
     public void setNombre(String nombre) {
         if (nombre == null || nombre.isBlank()) {
-            throw new PizzeriaException("El nombre del cliente es obligatorio.");
+            throw new DomainException("El nombre del cliente es obligatorio.");
         }
         this.nombre = nombre;
     }
@@ -27,7 +25,7 @@ public class Cliente {
             return;
         }
         if (telefono.length() < 10) {
-            throw new PizzeriaException("Si registra un teléfono, debe tener al menos 10 dígitos.");
+            throw new DomainException("Si registra un teléfono, debe tener al menos 10 dígitos.");
         }
 
         this.telefono = telefono;

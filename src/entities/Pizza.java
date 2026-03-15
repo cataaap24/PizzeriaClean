@@ -1,12 +1,11 @@
 package entities;
 
-
 public class Pizza extends Producto {
      private final String tamano;
      private final String sabor;
 
-     public Pizza(String nombre, String tamano, String sabor) {
-         super(nombre);
+     public Pizza(String id, String nombre, String tamano, String sabor) {
+         super(id, nombre);
          this.tamano = tamano;
          this.sabor = sabor;
      }

@@ -3,8 +3,8 @@ package entities;
 public class Bebida extends Producto {
     private final int volumenMl;
 
-    public Bebida(String nombre, int volumenMl) {
-        super(nombre);
+    public Bebida(String id, String nombre, int volumenMl) {
+        super(id, nombre);
         this.volumenMl = volumenMl;
     }
 
