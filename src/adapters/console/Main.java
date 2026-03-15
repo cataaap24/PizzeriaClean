@@ -1,11 +1,13 @@
 package adapters.console;
 
 
-import java.util.Scanner;
-import java.util.List;
-
-import infrastructure.exceptions.PizzeriaException;
 import entities.*;
+import infrastructure.repositories.*;
+import infrastructure.services.SimpleIdGenerator;
+import java.util.List;
+import java.util.Scanner;
+import usecases.dto.*;
+import usecases.ports.IdGenerator;
 import usecases.services.*;
 
 public class Main {
@@ -14,114 +16,116 @@ public class Main {
 
         PizzaAnimation.mostrar();
 
-        Pizzeria atlas = new Pizzeria("Papa's Pizzeria");
+        IdGenerator idGen = new SimpleIdGenerator();
+        PizzeriaApp atlas = new PizzeriaApp("Papa's Pizzeria", new InMemoryClienteRepository(), 
+            new InMemoryProductoRepository(), new InMemoryPedidoRepository(), new InMemoryReservaRepository(),idGen);
+
         cargaInicialDeDatos(atlas);
 
-        Scanner sc = new Scanner(System.in);
-        int op;
-        do {
-            System.out.println("\n── " + atlas.getNombre() + " ──");
-            menuPrincipal();
-            op = leerEntero(sc);
-
-            try {
-                switch (op) {
-                    case 1:
-                        atlas.mostrarMenu();
-                        break;
-                    case 2:
-                        atlas.mostrarClientes();
-                        break;
-                    case 3:
-                        System.out.println("\n--- NUEVO PEDIDO ---");
-                        atlas.mostrarClientes();
-                        System.out.print("ID Cliente: ");
-                        int idCliente = leerEntero(sc);
-                        atlas.mostrarMenu();
-                        System.out.print("ID Producto: ");
-                        int idProducto = leerEntero(sc);
-                        System.out.print("Cantidad: ");
-                        int cantidad = leerEntero(sc);
-                        TipoEntrega tipo = elegirTipoEntrega(sc);
-                        atlas.realizarPedido(idCliente, idProducto, cantidad, tipo);
-                        break;
-                    case 4:
-                        if (atlas.mostrarPedidosActivos()) {
-                            System.out.print("ID pedido a entregar: ");
-                            int idEntregar = leerEntero(sc);
-                            atlas.entregarPedido(idEntregar);
+        try (Scanner sc = new Scanner(System.in)) {
+            int op;
+            do {
+                System.out.println("\n── " + atlas.getNombre() + " ──");
+                menuPrincipal();
+                op = leerEntero(sc);
+                
+                try {
+                    switch (op) {
+                        case 1 -> imprimirLista("Menú", atlas.mostrarMenu());
+                        case 2 -> imprimirLista("Clientes", atlas.mostrarClientes());
+                        case 3 -> {
+                            System.out.println("\n--- NUEVO PEDIDO ---");
+                            imprimirLista("Clientes", atlas.mostrarClientes());
+                            System.out.print("ID Cliente: ");
+                            String idCliente = sc.nextLine();
+                            imprimirLista("Menú", atlas.mostrarMenu());
+                            System.out.print("ID Producto: ");
+                            String idProducto = sc.nextLine();
+                            System.out.print("Cantidad: ");
+                            int cantidad = leerEntero(sc);
+                            TipoEntrega tipo = elegirTipoEntrega(sc);
+                            OperationResult result = atlas.realizarPedido(idCliente, idProducto, cantidad, tipo);
+                            System.out.println(result.getMessage());
+                            if (result.isSuccess() && result.getResumen() != null) {
+                                imprimirTicket(result.getResumen());
+                            }
                         }
-                        break;
-                    case 5:
-                        if (atlas.mostrarPedidosActivos()) {
-                            System.out.print("ID Pedido a cancelar: ");
-                            int idCancelar = leerEntero(sc);
-                            atlas.cancelarPedido(idCancelar);
+                        case 4 -> {
+                            System.out.println("\n--- ENTREGAR PEDIDO ---");
+                            List<Pedido> activos = atlas.mostrarPedidosActivos();
+                            imprimirLista("Pedidos Activos", activos);
+                            if (!activos.isEmpty()) {
+                                System.out.print("ID pedido a entregar: ");
+                                OperationResult result = atlas.entregarPedido(sc.nextLine());
+                                System.out.println(result.getMessage());
+                            }
                         }
-                        break;
-                    case 6:
-                        atlas.mostrarPedidos();
-                        break;
-                    case 7:
-                        System.out.println("\n--- REGISTRO DE NUEVO CLIENTE ---");
-                        sc.nextLine(); // limpiar el buffer
-                        System.out.print("Nombre completo: ");
-                        String nombre = sc.nextLine();
-                        System.out.print("Teléfono (Opcional, 10 dígitos): ");
-                        String telefono = sc.nextLine();
 
-                        try {
-                            Cliente nuevo = new Cliente(nombre, telefono);
-                            atlas.registrarCliente(nuevo);
-                            System.out.println("Cliente registrado exitosamente.");
-                        } catch (PizzeriaException e) {
-                            System.out.println("\n Error al registrar: " + e.getMessage());
+                        case 5 -> {
+                            System.out.println("\n--- CANCELAR PEDIDO ---");
+                            List<Pedido> activos = atlas.mostrarPedidosActivos();
+                            imprimirLista("Pedidos Activos", activos);
+                            if (!activos.isEmpty()) {
+                                System.out.print("ID Pedido a cancelar: ");
+                                OperationResult result = atlas.cancelarPedido(sc.nextLine());
+                                System.out.println(result.getMessage());
+                            }
                         }
-                        break;
-                    case 8:
-                        System.out.println("\n--- NUEVA RESERVA ---");
-                        atlas.mostrarClientes();
-                        System.out.print("ID Cliente: ");
-                        int idClienteRes = leerEntero(sc);
-                        System.out.print("Número de personas: ");
-                        int personas = leerEntero(sc);
-                        sc.nextLine(); // limpiar buffer
-                        System.out.print("Hora de llegada (ej: 19:30): ");
-                        String hora = sc.nextLine();
-                        atlas.registrarReserva(idClienteRes, personas, hora);
-                        break;
+                        case 6 -> imprimirLista("Pedidos", atlas.mostrarPedidos());
+                        case 7 -> {
+                            System.out.println("\n--- REGISTRO DE NUEVO CLIENTE ---");
+                            System.out.print("Nombre completo: ");
+                            String nombre = sc.nextLine();
+                            System.out.print("Teléfono (10 dígitos): ");
 
-                    case 9:
-                        if (atlas.mostrarReservasActivas()) {
-                            System.out.print("ID Reserva a confirmar: ");
-                            int idConfirmar = leerEntero(sc);
-                            atlas.confirmarReserva(idConfirmar);
+                            String telefono = sc.nextLine();
+                            OperationResult result = atlas.registrarCliente(nombre, telefono);
+                            System.out.println(result.getMessage());
                         }
-                        break;
 
-                    case 10:
-                        if (atlas.mostrarReservasActivas()) {
-                            System.out.print("ID Reserva a cancelar: ");
-                            int idCancelarRes = leerEntero(sc);
-                            atlas.cancelarReserva(idCancelarRes);
+                        case 8 -> {
+                            System.out.println("\n--- NUEVA RESERVA ---");
+                            imprimirLista("Clientes", atlas.mostrarClientes());
+                            System.out.print("ID Cliente: ");
+                            String idCliente = sc.nextLine();
+                            System.out.print("Número de personas: ");
+                            int personas = leerEntero(sc);
+                            System.out.print("Hora de llegada (ej: 19:30): ");
+                            String hora = sc.nextLine();
+                            OperationResult result = atlas.registrarReserva(idCliente, personas, hora);
+                            System.out.println(result.getMessage());
                         }
-                        break;
 
-                    case 11:
-                        atlas.mostrarReservas();
-                        break;
-                    case 0:
-                        System.out.println("Saliendo del sistema...");
-                        break;
-                    default:
-                        System.out.println("Opción no válida");
+                        case 9 -> {
+                            System.out.println("\n--- CONFIRMAR RESERVA ---");
+                            List<Reserva> activas = atlas.mostrarReservasActivas();
+                            imprimirLista("Reservas Activas", activas);
+                            if (!activas.isEmpty()) {
+                                System.out.print("ID Reserva a confirmar: ");
+                                OperationResult result = atlas.confirmarReserva(sc.nextLine());
+                                System.out.println(result.getMessage());
+                            }
+                        }
+
+                        case 10 -> {
+                            System.out.println("\n--- CANCELAR RESERVA ---");
+                            List<Reserva> activas = atlas.mostrarReservasActivas();
+                            imprimirLista("Reservas Activas", activas);
+                            if (!activas.isEmpty()) {
+                                System.out.print("ID Reserva a cancelar: ");
+                                OperationResult result = atlas.cancelarReserva(sc.nextLine());
+                                System.out.println(result.getMessage());
+                            }
+                        }
+                        case 11 -> imprimirLista("Listado de Reservas", atlas.mostrarReservaciones());
+                        case 0 -> System.out.println("Saliendo del sistema...");
+                        default -> System.out.println("Opción no válida");
+                    }
+                } catch (DomainException e) {
+                    System.err.println("\nERROR: " + e.getMessage());
                 }
-            } catch (PizzeriaException e) {
-                System.err.println("\nERROR: " + e.getMessage());
-            }
-
-        } while (op != 0);
-        sc.close();
+            } while (op != 0);
+        }
     }
 
     private static void menuPrincipal() {
@@ -140,21 +144,37 @@ public class Main {
         System.out.print("Opción: ");
     }
 
-    private static void cargaInicialDeDatos(Pizzeria pizz) {
-        pizz.registrarCliente(new Cliente("Juan Diaz", "3132300200"));
-        pizz.registrarCliente(new Cliente("Martin Marco", "3132300222"));
-        pizz.registrarCliente(new Cliente("Arturo Arias", "3132302122"));
-        pizz.registrarCliente(new Cliente("Maria Mar", "3132303344"));
+    private static void cargaInicialDeDatos(PizzeriaApp pizz) {
+        pizz.registrarCliente("Martin Marco", "3132300222");
+        pizz.registrarCliente("Arturo Arias", "3132302122");
+        pizz.registrarCliente("Maria Mar", "3132303344");
 
-        pizz.registrarProducto(new Pizza("Placer de antano", "M", "Pina - Peperoni"));
-        pizz.registrarProducto(new Pizza("Camaronzon", "G", "Camarones - Salsa"));
-        pizz.registrarProducto(new Pizza("Carnivora Suprema", "G", "Carne molida - Chorizo - Peperoni"));
-        pizz.registrarProducto(new Pizza("Veggie Deluxe", "P", "Champinones - Pimenton - Cebolla - Maiz"));
-        pizz.registrarProducto(new Pizza("Mexicana Picante", "M", "Carne - Jalapenos - Nachos triturados"));
-        pizz.registrarProducto(new Bebida("Cocacola", 350));
-        pizz.registrarProducto(new Bebida("Sprite", 350));
-        pizz.registrarProducto(new Bebida("Agua", 300));
-        System.out.println("Datos cargados");
+        pizz.registrarPizza("Placer de antano", "M", "Pina - Peperoni");
+        pizz.registrarPizza("Camaronzon", "G", "Camarones - Salsa");
+        pizz.registrarPizza("Carnivora Suprema", "G", "Carne molida - Chorizo - Peperoni");
+        pizz.registrarPizza("Veggie Deluxe", "P", "Champinones - Pimenton - Cebolla - Maiz");
+        pizz.registrarPizza("Mexicana Picante", "M", "Carne - Jalapenos - Nachos triturados");
+        pizz.registrarBebida("Cocacola", 350);
+        pizz.registrarBebida("Sprite", 350);
+        pizz.registrarBebida("Agua", 300);
+    }
+
+    private static void imprimirTicket(ResumenPedido resumen) {
+        System.out.println("\n========================================");
+        System.out.println("           RESUMEN DEL PEDIDO           ");
+        System.out.println("========================================");
+        System.out.println(" ID Pedido  : " + resumen.getOrder().getId());
+        System.out.println(" Fecha      : " + resumen.getOrder().getFecha());
+        System.out.println(" Cliente    : " + resumen.getOrder().getCliente().getNombre());
+        System.out.println(" Producto   : " + resumen.getOrder().getProducto().getNombre());
+        System.out.println(" Cantidad   : " + resumen.getOrder().getCantidad());
+        System.out.println(" Entrega    : " + resumen.getOrder().getTipoEntrega());
+        System.out.println("----------------------------------------");
+        System.out.printf( " Valor Base : $%,.2f%n", (resumen.getValorBase()));
+        System.out.printf( " Subtotal   : $%,.2f%n", (resumen.getSubtotal()));
+        System.out.printf( " Descuento  : $%,.2f%n", resumen.getDescuento());
+        System.out.printf( " TOTAL      : $%,.2f%n", resumen.getTotal());
+        System.out.println("========================================\n");
     }
 
     private static TipoEntrega elegirTipoEntrega(Scanner sc) {
@@ -167,15 +187,19 @@ public class Main {
         int opcion = leerEntero(sc); 
     
         switch (opcion) {
-            case 1:
+            case 1 -> {
                 return TipoEntrega.PARA_AQUI;
-            case 2:
+            }
+            case 2 -> {
                 return TipoEntrega.PARA_LLEVAR;
-            case 3:
+            }
+            case 3 -> {
                 return TipoEntrega.DOMICILIO;
-            default:
+            }
+            default -> {
                 System.out.println("Opción no válida, asignando para comer aquí.");
                 return TipoEntrega.PARA_AQUI;
+            }
         }
     }
     
@@ -193,8 +217,10 @@ public class Main {
     private static int leerEntero(Scanner sc) {
         while (!sc.hasNextInt()) {
             sc.next();
-            System.out.print("Ingrese un número: ");
+            System.out.print("Ingrese un número válido: ");
         }
-        return sc.nextInt();
+        int numero = sc.nextInt();
+        sc.nextLine();
+        return numero;
     }
 }

@@ -1,13 +1,9 @@
-
 package entities;
-import usecases.services.IdGenerator;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import infrastructure.exceptions.PizzeriaException;
-
 public class Pedido implements Entregable {
-      private final int id;
+      private final String id;
       private EstadoPedido estado;
       private final Cliente cliente;
       private final Producto producto;
@@ -28,8 +24,8 @@ public class Pedido implements Entregable {
             public String getFecha() { return this.fecha; }
       }
 
-      public Pedido(Cliente cliente, Producto producto, int cantidad, TipoEntrega tipoEntrega) {
-            this.id = IdGenerator.nextId();
+      public Pedido(String id, Cliente cliente, Producto producto, int cantidad, TipoEntrega tipoEntrega) {
+            this.id = id;
             this.estado = EstadoPedido.PENDIENTE;
             this.cliente = cliente;
             this.producto = producto;
@@ -37,7 +33,7 @@ public class Pedido implements Entregable {
             this.tipoEntrega = tipoEntrega;
       }
 
-      public int getId() { return this.id; }
+      public String getId() { return this.id; }
       public Cliente getCliente() { return this.cliente; }
       public Producto getProducto() { return this.producto; }
       public int getCantidad() { return this.detalle.getCantidad(); }
@@ -50,7 +46,7 @@ public class Pedido implements Entregable {
       @Override
       public boolean entregar() {
             if (this.estado == EstadoPedido.CANCELADO) {
-                  throw new PizzeriaException("ERROR: No se puede entregar un pedido cancelado.");
+                  throw new DomainException("ERROR: No se puede entregar un pedido cancelado.");
             }
             this.estado = EstadoPedido.ENTREGADO;
             return true;
@@ -59,7 +55,7 @@ public class Pedido implements Entregable {
       @Override
       public boolean cancelar() {
             if (this.estado == EstadoPedido.ENTREGADO) {
-                  throw new PizzeriaException("ERROR: No se puede cancelar un pedido que ya ha sido entregado.");
+                  throw new DomainException("ERROR: No se puede cancelar un pedido que ya ha sido entregado.");
             }
             this.estado = EstadoPedido.CANCELADO;
             return true;
