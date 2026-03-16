@@ -21,312 +21,54 @@
 ## Estructura del proyecto
 ```
 src/
-│
-├── entities/
-│   ├── Entregable.java
-│   ├── EstadoPedido.java
-│   ├── TipoEntrega.java
-│   ├── Producto.java
-│   ├── Pizza.java
-│   ├── Bebida.java
-│   ├── Cliente.java
-│   ├── Pedido.java
-│   └── Reserva.java
-│
-├── usecases/
-│   ├── ports/
-│   │   ├── IdGenerator.java
-│   │   ├── ClienteRepository.java
-│   │   ├── ProductoRepository.java
-│   │   ├── PedidoRepository.java
-│   │   └── ReservaRepository.java
-│   │
-│   ├── dto/
-│   │   └── OperationResult.java
-│   │
-│   └── services/
-│       ├── Reglas.java
-│       ├── CalculadoraTotal.java
-│       ├── RegistrarClienteUseCase.java
-│       ├── RealizarPedidoUseCase.java
-│       ├── EntregarPedidoUseCase.java
-│       ├── CancelarPedidoUseCase.java
-│       ├── RegistrarReservaUseCase.java
-│       ├── ConfirmarReservaUseCase.java
-│       ├── CancelarReservaUseCase.java
-│       └── PizzeriaApp.java
-│
-├── infrastructure/
-│   ├── repositories/
-│   │   ├── InMemoryClienteRepository.java
-│   │   ├── InMemoryProductoRepository.java
-│   │   ├── InMemoryPedidoRepository.java
-│   │   └── InMemoryReservaRepository.java
-│   │
-│   └── services/
-│       └── SimpleIdGenerator.java
-│
 ├── adapters/
-    └── console/
-    ├── Main.java
-    └── PizzaAnimation.java
+│   └── console/
+│       ├── Main.java
+│       └── PizzaAnimation.java
+├── entities/
+│   ├── Bebida.java
+│   ├── Cliente.java
+│   ├── DomainException.java
+│   ├── Entregable.java
+│   ├── EstadoPedido.java
+│   ├── Pedido.java
+│   ├── Pizza.java
+│   ├── Producto.java
+│   ├── Reglas.java
+│   ├── Reserva.java
+│   └── TipoEntrega.java
+├── infrastructure/
+│   ├── repositories/
+│   │   ├── InMemoryClienteRepository.java
+│   │   ├── InMemoryPedidoRepository.java
+│   │   ├── InMemoryProductoRepository.java
+│   │   └── InMemoryReservaRepository.java
+│   └── services/
+│       └── SimpleIdGenerator.java
+└── usecases/
+    ├── dto/
+    │   ├── OperationResult.java
+    │   └── ResumenPedido.java
+    ├── ports/
+    │   ├── ClienteRepository.java
+    │   ├── IdGenerator.java
+    │   ├── PedidoRepository.java
+    │   ├── ProductoRepository.java
+    │   └── ReservaRepository.java
+    └── services/
+        ├── CalculadoraTotal.java
+        ├── CancelarPedido.java
+        ├── CancelarReserva.java
+        ├── ConfirmarReserva.java
+        ├── EntregarPedido.java
+        ├── PizzeriaApp.java
+        ├── RealizarPedido.java
+        ├── RegistrarBebida.java
+        ├── RegistrarCliente.java
+        ├── RegistrarPizza.java
+        └── RegistrarReserva.java
 
 ```
----
-## A. Relaciones entre clases
-
-### 1. Uso (Dependency)
-`CalculadoraTotal` usa a `TipoEntrega` para calcular el total con base a su información, porque la recibe como parámetro.
-`Pizzeria` usa `CalculadoraTotal` invocando su método estático `calcular()`:
-
-```java
-// Pizzeria.java
- double total = calculadoraTotal.calcular(valorBase, cantidad, tipoEntrega);
-```
-
-### 2. Asociación
-`Pedido` referencia a `Cliente` y a `TipoEntrega` , objetos que existen independientemente del pedido pero que se relaciona con él. 
-`Reserva` referencia a `Cliente` de la misma forma.
-```java
-// Pedido.java
-private Cliente cliente;
-// Reserva.java
-private Cliente cliente;
-```
-
-### 3. Agregación
-`Pizzeria` agrega listas de `Producto`, `Cliente`, `Pedido` y `Reserva`.
-Los objetos se crean fuera de `Pizzeria` (específicamente en `Main.java`) y se pasan como
-parámetros, por lo que tienen existen por su cuenta.
-
-```java
-// Main.java
-pizz.registrarCliente(new Cliente("Juan Diaz", "3132300200"));
-pizz.registrarProducto(new Pizza("Placer de antano", "M", "Pina - Peperoni"));
-```
-
-
-### 4. Composición
-`Pedido` crea internamente `DetallePedido`; este objeto no tiene sentido ni existencia fuera del pedido que lo contiene (clase estática privada).
-
-```java
-// Pedido.java
-private static class DetallePedido {
-    private int cantidad;
-    DetallePedido(int cantidad) { ... }
-}
-this.detalle = new DetallePedido(cantidad); // se crea adentro de Pedido ---> composición
-```
-
----
-
-## B. Visibilidad y control de acceso
-
-  | Miembro | Modificador | Justificación |
-  | :---:       |     :---:      |          :---: |
-  | `Producto.id`, `nombre` | `private` | Solo accesible con getters/setters |
-  | `Producto.disponible` | `protected` | Las subclases `Pizza`/`Bebida` pueden leerlo |
-  | `IdGenerator.current` | `private static` | Estado interno del generador |
-  | `Reglas.*` | `public static final` | Constantes globales del sistema |
-
-Validaciones empleadas en setters:
-```java
-public void setNombre(String nombre) {
-    if (nombre == null || nombre.isBlank()) return; 
-    this.nombre = nombre;
-}
-```
-
----
-
-## C. Herencia
-
-```
-Producto (abstracta)
-  - Pizza    
-  - Bebida   
-```
-
----
-
-## D. Polimorfismo
-
-`Pizzeria.mostrarMenu()` recorre `ArrayList<Producto>` y llama `calcularPrecioBase()` en cada objeto; Java ejecuta la versión correcta
-según el tipo real de producto (`Pizza` o `Bebida`).
-
-```java
-System.out.println("\n--- Menú ---");
-for (Producto p : menu) {
-   System.out.println("  " + p + " | Precio base: $" + (int)p.calcularValorBase());
-}
-```
-
----
-
-
-## E. Clase abstracta
-
-`Producto` es abstracta y obliga a sus subclases a implementar:
-- `getTipo()`: devuelve el tipo de producto.
-- `calcularPrecioBase()`: cada producto define su propio precio.
-
----
-
-## F. Interfaz
-
-```java
-public interface Entregable {
-    public void pedir();
-    public boolean cancelar();
-    public boolean estaActivo ();
-    public boolean entregar();
-}
-
-```
-
-La interfaz Entregable define el contrato de comportamiento que deben cumplir los objetos que pueden ser pedidos, entregados o cancelados. Dos clases distintas la implementan:
-
-- `Pedido` implements `Entregable`: gestiona el ciclo de vida de un pedido de comida.
-- `Reserva` implements `Entregable`: gestiona el ciclo de vida de una reserva de mesa.
-
-Esto demuestra el propósito real de una interfaz: clases distintas comparten el mismo contrato sin necesidad de heredar de la misma clase padre.
-
----
-
-## G. Modificador `static`
-
-| Uso | Archivo | Descripción |
-|:---:|:---:|:---:|
-| `IdGenerator.current` | `IdGenerator.java` | Contador estático compartido |
-| `IdGenerator.nextId()` | `IdGenerator.java` | Método estático generador de IDs |
-| `Reglas.PRECIO_PIZZA_*` | `Reglas.java` | Constantes `static final` |
-| `CalculadoraTotal.calcular()` | `CalculadoraTotal.java` | Método utilitario estático |
-| `DetallePedido` (clase interna) | `Pedido.java` | Clase interna estática privada |
-| `TipoEntrega.*` | `TipoEntrega.java` | Valores enum son static final implícitos (colecciones de constantes fijas) |
-| `EstadoPedido.*` | `EstadoPedido.java` | Valores enum son static final implícitos (colecciones de constantes fijas) |
----
-
-
-## Casos de prueba manuales
-
-### Caso 1: Listar menú (polimorfismo)
-**Acción:** opción `1`
-
-**Resultado esperado:** muestra Pizza y Bebida con sus precios base distintos.
-
-**Ejemplo:**
-```
---- Menú ---
-  [Pizza] ID = 5, Nombre = 'Placer de antano', Disponible = true (Sabor = Pina - Peperoni, Tamaño = M) | Precio base: $20000
-  [Pizza] ID = 6, Nombre = 'Camaronzon', Disponible = true (Sabor = Camarones - Salsa, Tamaño = G) | Precio base: $35000
-  [Pizza] ID = 7, Nombre = 'Carnivora Suprema', Disponible = true (Sabor = Carne molida - Chorizo - Peperoni, Tamaño = G) | Precio base: $35000
-  [Pizza] ID = 8, Nombre = 'Veggie Deluxe', Disponible = true (Sabor = Champinones - Pimenton - Cebolla - Maiz, Tamaño = P) | Precio base: $15000
-  [Pizza] ID = 9, Nombre = 'Mexicana Picante', Disponible = true (Sabor = Carne - Jalapenos - Nachos triturados, Tamaño = M) | Precio base: $20000
-  [Bebida] ID = 10, Nombre = 'Cocacola', Disponible = true (Volumen = 350ml) | Precio base: $4500
-  [Bebida] ID = 11, Nombre = 'Sprite', Disponible = true (Volumen = 350ml) | Precio base: $4500
-  [Bebida] ID = 12, Nombre = 'Agua', Disponible = true (Volumen = 300ml) | Precio base: $3000
-```
-
----
-
-### Caso 2: Pedido en local (sin costo adicional)
-**Acción:** opción `3` --> ID Cliente: `1`, ID Producto: `5`, Cantidad: `2`, Entrega: `1` (Local)
-
-**Resultado esperado:**
-```
-========================================
-           RESUMEN DEL PEDIDO           
-========================================
- ID Pedido  : 13
- Cliente    : Juan Diaz
- Producto   : Placer de antano
- Cantidad   : 2
- Entrega    : Para aquí
-----------------------------------------
- Subtotal   : $40.000,00
- TOTAL      : $40.000,00
-========================================
-```
-
----
-
-### Caso 3: Pedido con domicilio (costo adicional)
-**Acción:** opción `3` ---> ID Cliente: `2`, ID Producto: `10`, Cantidad: `1`, Entrega: `3` (Domicilio)
-
-**Resultado esperado:**
-```
-========================================
-           RESUMEN DEL PEDIDO           
-========================================
- ID Pedido  : 14
- Cliente    : Martin Marco
- Producto   : Cocacola
- Cantidad   : 1
- Entrega    : Envío a domicilio(+$3000)
-----------------------------------------
- Subtotal   : $4.500,00
- TOTAL      : $7.500,00
-========================================
-
-```
-
----
-
-### Caso 4: Entregar Pedido
-**Acción:** opción `4`  ---> se muestran pedidos activos ---> ingresar ID del pedido del Caso 2
-
-**Resultado esperado:**
-```
---- Pedidos Activos ---
-Pedido ID = 13 | Cliente = Juan Diaz | Producto = Placer de antano | Cantidad = 2 | Entrega = Para aquí | Estado del pedido = Pedido en preparación
-Confirmación: Pedido 13 marcado como entregado.
-```
-
----
-
-### Caso 5: Cancelar pedido 
-**Acción:** opción `5` ---> se muestran pedidos activos ---> ingresar ID del pedido del Caso 3
-
-**Resultado esperado:**
-```
---- Pedidos Activos ---
-Pedido ID = 14 | Cliente = Martin Marco | Producto = Cocacola | Cantidad = 1 | Entrega = Envío a domicilio | Estado del pedido = Pedido en preparación
-ID Pedido a cancelar: 14
-Confirmación: Pedido 14 ha sido cancelado.
-```
-
----
-
-### Caso 6: Intentar pedir una cantidad muy grande de un ítem
-**Acción:** opción `4` ---> Cantidad: `0` o `9`
-
-**Resultado esperado:**
-```
-Cantidad inválida (1-8).
-```
-
----
-
-### Caso 7: Cliente inexistente
-**Acción:** opción `3` ---> ID Cliente: `999`
-
-**Resultado esperado:**
-```
-Cliente no encontrado.
-```
-
-### Caso 8: Registrar y confirmar reserva
-**Acción:** opción `8` → ID Cliente: `3`, Personas: `4`, Mesa: `2`, Hora: 19:30
-luego opción `9` ---> ingresar ID de la reserva creada
-**Resultado esperado:**
-```
-Reserva creada: ID = 13 | Hora = 19:30
-
---- Reservas Activas ---
-Reserva ID = 13 | Cliente = Arturo Arias | Personas = 4 | Hora = 19:30 | Estado = En preparación
-Reserva 13 confirmada.
-```
-
 ---
 
 ## Compilación y ejecución
@@ -339,14 +81,3 @@ javac -d out -sourcepath src src/ui/Main.java
 # Ejecutar
 java -cp out -ui.Main
 ```
-
----
-
-## Lista de chequeo 
-
-- [x] UML completo con relaciones y visibilidad (ver `/docs/UmlJavaPizza.png`)
-- [x] Clase abstracta `Producto` con subclases `Pizza` y `Bebida`
-- [x] Interfaz `Entregable` implementada correctamente
-- [x] Polimorfismo con `ArrayList<Producto>`
-- [x] Uso correcto de `static` (IdGenerator, Reglas, CalculadoraTotal, TipoEntrega)
-- [x] README con 9 casos de prueba
