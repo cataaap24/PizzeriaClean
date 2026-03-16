@@ -1,5 +1,5 @@
 # Sistema de Gestión de Pizzería - Mini Proyecto POO
-> Mini gestor de pedidos de pizzería basado en Java, diseñado bajo arquitectura de capas (Model-Service-UI) y principios POO.
+> Mini gestor de pedidos de pizzería basado en Java, rediseñado bajo arquitectura limpia (adapters, entities, infrastructure y usecases) y principios POO.
 
 
 ```
